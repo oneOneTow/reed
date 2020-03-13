@@ -10,9 +10,6 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public enum ProtocolSign {
-  /**
-   * 请求
-   */
   REED((byte) 1);
 
   @Getter

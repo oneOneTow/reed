@@ -1,6 +1,8 @@
 package com.think.reed.codec;
 
 import com.think.reed.connect.Connection;
+import com.think.reed.protocol.Protocol;
+import com.think.reed.protocol.ProtocolFactory;
 import com.think.reed.protocol.ProtocolSign;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,13 +15,12 @@ import io.netty.util.Attribute;
  * @author jgs
  * @date 2020/3/11 16:17
  */
-public class ReedMessageToByte extends MessageToByteEncoder<Object> {
+public class ProtocolCodeBasedEncoder extends MessageToByteEncoder<Object> {
 
   protected void encode(ChannelHandlerContext channelHandlerContext, Object o, ByteBuf byteBuf)
       throws Exception {
     Attribute<ProtocolSign> attr = channelHandlerContext.channel().attr(Connection.protocol);
-    ProtocolSign protocolSign = attr.get();
-
-
+    Protocol protocol = ProtocolFactory.getProtocol(attr.get());
+    protocol.getEncoder().encode(channelHandlerContext, o, byteBuf);
   }
 }
