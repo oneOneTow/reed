@@ -6,4 +6,7 @@ package com.think.reed.serialzation;
  */
 public interface Serializer {
 
+  public byte[] serialize(final Object o);
+
+  public <T> T deserialize(byte[] bytes,String classO);
 }
