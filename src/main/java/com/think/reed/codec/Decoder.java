@@ -11,4 +11,5 @@ import java.util.List;
 public interface Decoder {
 
   void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> o);
+
 }
