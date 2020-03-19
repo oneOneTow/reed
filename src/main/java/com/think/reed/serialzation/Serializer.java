@@ -8,5 +8,5 @@ public interface Serializer {
 
   public byte[] serialize(final Object o);
 
-  public <T> T deserialize(byte[] bytes,String classO);
+  public <T> T deserialize(byte[] bytes,String classO) throws ClassNotFoundException;
 }
