@@ -1,3 +1,10 @@
-A reference to a related issue in your repository.
-A description of the changes proposed in the pull request.
-@mentions of the person or team responsible for reviewing proposed changes.
+Motivation:
+Explain the context, and why you're making that change. To make others understand what is the problem you're trying to solve.
+
+Modification:
+Describe the idea and modifications you've done.
+
+Result:
+Fixes #.
+
+If there is no issue then describe the changes introduced by this PR.
