@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Connection {
 
-  static final AttributeKey<ProtocolSign> protocol = AttributeKey.newInstance("protocol");
+  public static final AttributeKey<ProtocolSign> protocol = AttributeKey.newInstance("protocol");
   private Channel channel;
   private ConcurrentMap<String, ReedRpcInvokeFuture> reedInvokeFutureMap = new ConcurrentHashMap<String, ReedRpcInvokeFuture>();
 
