@@ -1,4 +1,4 @@
-package java.com.think.reed.connect;
+package com.think.reed.connect;
 
 /**
  * @desc:

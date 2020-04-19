@@ -1,6 +1,6 @@
-package java.com.think.reed.util;
+package com.think.reed.util;
 
-import com.think.reed.util.StringUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
 

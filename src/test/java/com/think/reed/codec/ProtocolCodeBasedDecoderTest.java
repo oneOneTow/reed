@@ -1,4 +1,4 @@
-package java.com.think.reed.codec;
+package com.think.reed.codec;
 
 /**
  * @desc:
