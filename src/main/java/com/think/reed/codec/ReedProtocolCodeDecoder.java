@@ -1,6 +1,6 @@
 package com.think.reed.codec;
 
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import com.think.reed.rpc.RpcCommand;
 import com.think.reed.rpc.RpcCommandType;
 import com.think.reed.rpc.RpcRequestCommand;
@@ -27,7 +27,7 @@ public class ReedProtocolCodeDecoder implements Decoder {
 
     rpcCommand = mapByType(type);
 
-    rpcCommand.setProtocolSign(ProtocolSign.fromValue(protocolSign));
+    rpcCommand.setProtocolType(ProtocolType.fromValue(protocolSign));
     rpcCommand.setType(RpcCommandType.fromValue(type));
     rpcCommand.setClassLen(classLen);
     rpcCommand.setHeaderLen(headerLen);

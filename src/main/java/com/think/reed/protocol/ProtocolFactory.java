@@ -6,7 +6,7 @@ package com.think.reed.protocol;
  */
 public final class ProtocolFactory {
 
-  public static final Protocol getProtocol(ProtocolSign protocolSign) {
-    return ProtocolSign.REED == protocolSign ? new ReedProtocol() : null;
+  public static final Protocol getProtocol(ProtocolType protocolType) {
+    return ProtocolType.REED == protocolType ? new ReedProtocol() : null;
   }
 }

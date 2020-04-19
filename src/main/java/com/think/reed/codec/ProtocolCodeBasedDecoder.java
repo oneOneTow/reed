@@ -3,7 +3,7 @@ package com.think.reed.codec;
 import com.think.reed.connect.Connection;
 import com.think.reed.protocol.Protocol;
 import com.think.reed.protocol.ProtocolFactory;
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -20,7 +20,7 @@ public class ProtocolCodeBasedDecoder extends ByteToMessageDecoder {
 
   protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf,
       List<Object> out) throws Exception {
-    Attribute<ProtocolSign> attr = channelHandlerContext.channel().attr(Connection.protocol);
+    Attribute<ProtocolType> attr = channelHandlerContext.channel().attr(Connection.protocol);
     Protocol protocol = ProtocolFactory.getProtocol(attr.get());
     protocol.getDecoder().decode(channelHandlerContext, byteBuf, out);
   }

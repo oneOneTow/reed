@@ -1,7 +1,7 @@
 package com.think.reed.rpc.remoting;
 
 import com.think.reed.exception.ReedException;
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import com.think.reed.rpc.RpcCommand;
 import com.think.reed.rpc.invoke.ReedRpcInvokeContext;
 
@@ -12,7 +12,7 @@ import com.think.reed.rpc.invoke.ReedRpcInvokeContext;
 public interface ReedRemotingCommand {
   String getId();
 
-  ProtocolSign getProtocolCode();
+  ProtocolType getProtocolCode();
 
   ReedRpcInvokeContext getReedRpcInvokeContext();
 

@@ -1,6 +1,6 @@
 package com.think.reed.connect;
 
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import com.think.reed.rpc.invoke.ReedRpcInvokeFuture;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Connection {
 
-  public static final AttributeKey<ProtocolSign> protocol = AttributeKey.newInstance("protocol");
+  public static final AttributeKey<ProtocolType> protocol = AttributeKey.newInstance("protocol");
   private Channel channel;
   private ConcurrentMap<String, ReedRpcInvokeFuture> reedInvokeFutureMap = new ConcurrentHashMap<String, ReedRpcInvokeFuture>();
 

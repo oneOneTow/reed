@@ -3,7 +3,7 @@ package com.think.reed.rpc.invoke;
 import java.net.InetSocketAddress;
 import java.util.concurrent.CountDownLatch;
 
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import com.think.reed.rpc.remoting.ReedRemotingCommand;
 import com.think.reed.rpc.remoting.RemotingCommandFactory;
 
@@ -17,10 +17,10 @@ public class DefaultReedRpcInvokeFuture implements ReedRpcInvokeFuture {
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
     private String invokeId;
-    private ProtocolSign protocol;
+    private ProtocolType protocol;
     private RemotingCommandFactory commandFactory;
 
-    public DefaultReedRpcInvokeFuture(String invokeId, ProtocolSign protocol, RemotingCommandFactory commandFactory) {
+    public DefaultReedRpcInvokeFuture(String invokeId, ProtocolType protocol, RemotingCommandFactory commandFactory) {
         this.invokeId = invokeId;
         this.commandFactory = commandFactory;
         this.protocol = protocol;

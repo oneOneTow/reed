@@ -1,6 +1,6 @@
 package com.think.reed.rpc;
 
-import com.think.reed.protocol.ProtocolSign;
+import com.think.reed.protocol.ProtocolType;
 import lombok.Data;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public abstract class RpcCommand {
-  private ProtocolSign protocolSign;
+  private ProtocolType protocolType;
   private RpcCommandType type;
   private byte classLen;
   private byte headerLen;
