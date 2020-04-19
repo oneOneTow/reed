@@ -16,7 +16,7 @@ public class StringUtilsTest {
     /**
      * @link: com.think.reed.util.StringUtils#isBlank(java.lang.String)
      */
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void When_Given_blank_str_Should_return_true() {
         boolean isBlank = StringUtils.isBlank("            ");
         Assert.assertFalse(isBlank);
