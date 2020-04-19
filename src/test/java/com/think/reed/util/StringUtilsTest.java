@@ -4,6 +4,7 @@ package com.think.reed.util;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 /**
  * @desc:
  * @author: zhiqing.lu
@@ -12,9 +13,13 @@ import org.junit.Test;
  **/
 public class StringUtilsTest {
 
-    @Test
+    /**
+     * @link: com.think.reed.util.StringUtils#isBlank(java.lang.String)
+     */
+    @Test(expected = NullPointerException.class)
     public void When_Given_blank_str_Should_return_true() {
         boolean isBlank = StringUtils.isBlank("            ");
         Assert.assertTrue(isBlank);
+
     }
 }
