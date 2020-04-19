@@ -19,7 +19,7 @@ public class StringUtilsTest {
     @Test()
     public void When_Given_blank_str_Should_return_true() {
         boolean isBlank = StringUtils.isBlank("            ");
-        Assert.assertFalse(isBlank);
+        Assert.assertTrue(isBlank);
 
     }
 }
