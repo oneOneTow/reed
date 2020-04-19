@@ -19,7 +19,7 @@ public class StringUtilsTest {
     @Test(expected = NullPointerException.class)
     public void When_Given_blank_str_Should_return_true() {
         boolean isBlank = StringUtils.isBlank("            ");
-        Assert.assertTrue(isBlank);
+        Assert.assertFalse(isBlank);
 
     }
 }
