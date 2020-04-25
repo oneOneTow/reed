@@ -7,4 +7,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface ReedRequestParam {
     boolean required() default true;
+
+    String value();
 }
