@@ -36,8 +36,6 @@ public class ReedRequest {
         return requestProps != null ? requestProps.get(key) : null;
     }
 
-    // ====================== 下面是非传递属性 ===============
-
     /**
      * Add request prop.
      *

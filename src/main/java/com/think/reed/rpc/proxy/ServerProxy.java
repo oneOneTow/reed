@@ -1,3 +1,14 @@
 package com.think.reed.rpc.proxy;
 
-public class ServerProxy implements Proxy {}
+import com.think.reed.rpc.ReedRequest;
+import com.think.reed.rpc.ReedResponse;
+
+public class ServerProxy implements Proxy {
+    public ReedResponse doInvoke(ReedRequest reedRequest) {
+        return null;
+    }
+
+    public ReedRequest buildRequest() {
+        return null;
+    }
+}
