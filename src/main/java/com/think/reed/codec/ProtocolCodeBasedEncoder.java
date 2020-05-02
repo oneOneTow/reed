@@ -1,6 +1,6 @@
 package com.think.reed.codec;
 
-import com.think.reed.connect.Connection;
+import com.think.reed.connect.metaobject.Connection;
 import com.think.reed.protocol.Protocol;
 import com.think.reed.protocol.ProtocolFactory;
 import com.think.reed.protocol.ProtocolType;
