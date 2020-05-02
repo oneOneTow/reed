@@ -10,6 +10,9 @@ import com.think.reed.connect.metaobject.Connection;
 public abstract class AbstractRemoting implements Remoting {
 
     @Override
+    public abstract RemotingCommand invokeSync(Connection conn, RemotingCommand request, int timeoutMillis);
+
+    @Override
     public abstract void oneWay(Connection conn, RemotingCommand request);
 
     @Override
