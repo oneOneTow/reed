@@ -1,6 +1,8 @@
 package com.think.reed.rpc.remoting;
 
 import com.think.reed.connect.metaobject.Connection;
+import com.think.reed.rpc.remoting.command.RpcCommand;
+import com.think.reed.rpc.remoting.command.future.InvokeFuture;
 
 /**
  * @author zhiqing.lu
@@ -17,7 +19,7 @@ public interface Remoting {
      * @param timeoutMillis
      * @return
      */
-    RemotingCommand invokeSync(final Connection conn, final RemotingCommand request, final int timeoutMillis);
+    RpcCommand invokeSync(final Connection conn, final RpcCommand request, final int timeoutMillis);
 
     /**
      * 单次调用
@@ -25,7 +27,7 @@ public interface Remoting {
      * @param conn
      * @param request
      */
-    void oneWay(final Connection conn, final RemotingCommand request);
+    void oneWay(final Connection conn, final RpcCommand request);
 
     /**
      * 异步调用
@@ -35,7 +37,7 @@ public interface Remoting {
      * @param timeoutMillis
      * @return
      */
-    InvokeFuture invokeWithFuture(final Connection conn, final RemotingCommand request, final int timeoutMillis);
+    InvokeFuture invokeWithFuture(final Connection conn, final RpcCommand request, final int timeoutMillis);
 
     /**
      * 回调函数调用
@@ -47,7 +49,7 @@ public interface Remoting {
      */
     void invokeWithCallback(final Connection conn,
         // -
-        final RemotingCommand request,
+        final RpcCommand request,
         // -
         final InvokeCallback invokeCallback,
         // -
