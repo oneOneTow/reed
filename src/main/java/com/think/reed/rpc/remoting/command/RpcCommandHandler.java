@@ -35,7 +35,7 @@ public class RpcCommandHandler implements CommandHandler {
         this.processorManager.registerDefaultProcessor(new AbstractRemotingProcessor<RpcCommand>() {
             @Override
             public void process(RemotingContext ctx, RpcCommand cmd, ExecutorService defaultExecutor) {
-                logger.error("No processor available for command code {}, msgId {}", cmd.getCmdCode(), cmd.getId());
+                logger.error("No processor available for command code {}, msgId {}", cmd.getType(), cmd.getId());
             }
         });
     }
@@ -44,7 +44,7 @@ public class RpcCommandHandler implements CommandHandler {
     public void handleCommand(RemotingContext ctx, Object msg) throws Exception {
         try {
             final RpcCommand cmd = (RpcCommand)msg;
-            final RemotingProcessor processor = processorManager.getProcessor(cmd.getCmdCode());
+            final RemotingProcessor processor = processorManager.getProcessor(cmd.getType());
             processor.process(ctx, cmd, processorManager.getDefaultExecutor());
         } catch (final Throwable t) {
             processException(ctx, msg, t);
@@ -87,7 +87,7 @@ public class RpcCommandHandler implements CommandHandler {
                         if (future.isSuccess()) {
                             if (logger.isInfoEnabled()) {
                                 logger.info("Write back exception response done, requestId={}, status={}", id,
-                                    response.getResponseStatus());
+                                    response.getResponseCode());
                             }
                         } else {
                             logger.error("Write back exception response failed, requestId={}", id, future.cause());
