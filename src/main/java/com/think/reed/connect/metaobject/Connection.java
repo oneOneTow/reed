@@ -1,12 +1,17 @@
 package com.think.reed.connect.metaobject;
 
 import com.think.reed.protocol.ProtocolType;
+import com.think.reed.rpc.remoting.command.future.InvokeFuture;
 import com.think.reed.util.RemoteUtils;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,12 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version: v1.0.0
  * @date: 2020/5/2 18:42
  **/
+@Data
 public class Connection {
 
-    /**
-     * logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(Connection.class);
+
+    public static final AttributeKey<Connection> CONNECTION = AttributeKey.valueOf("connection");
 
     /**
      * protocol
@@ -38,6 +43,16 @@ public class Connection {
     private static final int NO_REFERENCE = 0;
 
     /**
+     * url
+     */
+    private Url url;
+
+    /**
+     * poolKeys
+     */
+    private Set<String> poolKeys;
+
+    /**
      * 被应用次数
      */
     private final AtomicInteger referenceCount = new AtomicInteger();
@@ -47,9 +62,16 @@ public class Connection {
      */
     private AtomicBoolean closed = new AtomicBoolean(false);
 
+    private final ConcurrentHashMap<Integer, InvokeFuture> invokeFutureMap = new ConcurrentHashMap<>(4);
+
     public Connection(Channel channel) {
         this.channel = channel;
         this.channel.attr(protocol);
+    }
+
+    public Connection(Channel channel, Url url) {
+        this.channel = channel;
+        this.url = url;
     }
 
     public Channel getChannel() {
@@ -111,4 +133,11 @@ public class Connection {
         }
     }
 
+    public Set<String> getPoolKeys() {
+        return new HashSet<String>(poolKeys);
+    }
+
+    public InvokeFuture removeInvokeFuture(int cmdId) {
+        return this.invokeFutureMap.remove(cmdId);
+    }
 }

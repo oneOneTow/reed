@@ -1,6 +1,7 @@
 package com.think.reed.connect.strategy;
 
 import com.think.reed.connect.metaobject.Connection;
+import org.apache.commons.lang.math.RandomUtils;
 
 import java.util.List;
 
@@ -13,6 +14,10 @@ public class RandomConnectionSelectStrategy implements ConnectionSelectStrategy 
 
     @Override
     public Connection select(List<Connection> conns) {
-        return null;
+        if (null == conns || conns.isEmpty()) {
+            return null;
+        }
+        int connsSize = conns.size();
+        return conns.get(RandomUtils.nextInt(connsSize));
     }
 }

@@ -15,19 +15,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @version v1.0.0
  **/
 public class ConnectionPool {
-    private static final Logger                           logger = LoggerFactory.getLogger(ConnectionPool.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionPool.class);
     /**
      * 连接选举策略器
      */
-    private              ConnectionSelectStrategy         strategy;
+    private ConnectionSelectStrategy strategy;
     /**
      * connections
      */
-    private              CopyOnWriteArrayList<Connection> connections = new CopyOnWriteArrayList<Connection>();
+    private CopyOnWriteArrayList<Connection> connections = new CopyOnWriteArrayList<Connection>();
     /**
      * 最后访问connectionPool的时间戳
      */
-    private volatile     long                             lastAccessTimestamp;
+    private volatile long lastAccessTimestamp;
 
     public ConnectionPool(ConnectionSelectStrategy strategy) {
         this.strategy = strategy;
@@ -66,6 +66,11 @@ public class ConnectionPool {
         } else {
             return null;
         }
+    }
+
+    public List<Connection> getAll() {
+        markAccess();
+        return new ArrayList<>(this.connections);
     }
 
     /**

@@ -87,20 +87,16 @@ public interface ConnectionManager {
     void removeAndCloseAll(String poolKey);
 
     /**
-     * Remove and close all connections from all {@link ConnectionPool}.
-     * 
-     * @author zhiqing.lu
-     */
-    void removeAll();
+
 
     /**
      * check a connection whether available, if not, throw ConnectionException
      * 
      * @param connection
      * @return
-     * @author zhiqing.lu
+     * @author zhiqing.lu 可用的
      */
-    void checkConnAvaliable(Connection connection) throws ConnectionException;
+    void checkConnAvailable(Connection connection) throws ConnectionException;
 
     /**
      * Get a connection using {@link Url}, if {@code null} then create and add into {@link ConnectionPool}. The
@@ -121,17 +117,7 @@ public interface ConnectionManager {
      */
     Connection create(Url url);
 
-    /**
-     * Create a connection using specified {@link String} address.
-     *
-     * @param address
-     *            a {@link String} address, e.g. 127.0.0.1:1111
-     * @param connectTimeout
-     *            an int connect timeout value
-     * @return the created {@link Connection}
-     * @author zhiqing.lu
-     */
-    Connection create(String address, int connectTimeout);
+
 
     /**
      * Create a connection using specified ip and port.
@@ -144,4 +130,6 @@ public interface ConnectionManager {
      * @author zhiqing.lu
      */
     Connection create(String ip, int port, int connectTimeout);
+
+    void removeAll();
 }
