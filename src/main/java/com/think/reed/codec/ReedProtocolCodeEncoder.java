@@ -1,8 +1,9 @@
 package com.think.reed.codec;
 
-import com.think.reed.rpc.RpcCommand;
-import com.think.reed.rpc.RpcRequestCommand;
-import com.think.reed.rpc.RpcResponseCommand;
+
+import com.think.reed.rpc.remoting.command.RpcCommand;
+import com.think.reed.rpc.remoting.command.RpcRequestCommand;
+import com.think.reed.rpc.remoting.command.RpcResponseCommand;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 

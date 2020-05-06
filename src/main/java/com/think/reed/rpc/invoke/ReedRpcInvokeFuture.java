@@ -2,8 +2,9 @@ package com.think.reed.rpc.invoke;
 
 import java.net.InetSocketAddress;
 
-import com.think.reed.rpc.remoting.ReedRemotingCommand;
 
+
+import com.think.reed.rpc.remoting.command.RpcCommand;
 import io.netty.util.Timeout;
 
 /**
@@ -50,7 +51,7 @@ public interface ReedRpcInvokeFuture {
      * @param: null
      * @since 1.0
      */
-    void putResponse(ReedRemotingCommand remotingCommand);
+    void putResponse(RpcCommand remotingCommand);
 
     /**
      * async execute callback
@@ -68,6 +69,6 @@ public interface ReedRpcInvokeFuture {
      * @param: responseHost
      * @since 1.0
      */
-    ReedRemotingCommand createConnectionClosedResponse(InetSocketAddress responseHost);
+    RpcCommand createConnectionClosedResponse(InetSocketAddress responseHost);
 
 }
