@@ -1,20 +1,22 @@
-package com.think.reed.aop.aspect.core;
+package com.think.reed.core.aop.aspect;
 
+import com.think.reed.core.aop.aspect.annotation.ReedMapping;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 
-import com.think.reed.aop.aspect.annotation.ReedClient;
-import com.think.reed.aop.aspect.annotation.ReedRequestParam;
+import com.think.reed.core.aop.aspect.annotation.ReedClient;
+import com.think.reed.core.aop.aspect.annotation.ReedRequestParam;
 import com.think.reed.exception.ReedException;
-import com.think.reed.rpc.ReedRequest;
-import com.think.reed.rpc.ReedResponse;
+import com.think.reed.core.medium.ReedRequest;
+import com.think.reed.core.medium.ReedResponse;
 import com.think.reed.rpc.proxy.ClientProxy;
 import com.think.reed.rpc.proxy.Proxy;
 import com.think.reed.rpc.proxy.ReedDefaultInvocationHandler;
@@ -22,11 +24,13 @@ import com.think.reed.rpc.proxy.ReedDefaultInvocationHandler;
 @Aspect
 public class ReedClientAspect {
 
-    @Pointcut("@annotation(com.think.reed.aop.aspect.annotation.ReedRequest)")
+    @Pointcut("@annotation(com.think.reed.core.aop.aspect.annotation.ReedMapping)")
     public void doRequest() {}
 
-    @Around("doRequest()")
-    public void doRequest(JoinPoint joinPoint) throws NoSuchFieldException {
+    @Before("doRequest()")
+    public void doRequest(JoinPoint joinPoint) {
+
+        System.out.println("method is start!");
         if (!this.getClass().isAnnotationPresent(ReedClient.class)) {
             throw new ReedException("reedClient annotation absence!");
         }
@@ -49,6 +53,8 @@ public class ReedClientAspect {
         Class[] parameterTypes = signature.getParameterTypes();
         String[] parameterNames = signature.getParameterNames();
         Object[] objectValue = joinPoint.getArgs();
+        Method signatureMethod = signature.getMethod();
+        ReedMapping reedMapping = signatureMethod.getAnnotation(ReedMapping.class);
 
         Map<String, Object> props = null;
         if (null != parameterTypes && parameterTypes.length == 0) {
@@ -75,9 +81,18 @@ public class ReedClientAspect {
             }
         }
 
-        ReedRequest reedRequest = client.buildRequest();
-
+        ReedRequest reedRequest = this.buildRequest(instance, reedMapping.clazzName(), reedMapping.methodName(), props);
         ReedResponse reedResponse = client.doInvoke(reedRequest);
-
     }
+
+
+    ReedRequest buildRequest(String instanceName,String clazzName, String methodName, Map<String, Object> props) {
+        ReedRequest reedRequest = new ReedRequest();
+        reedRequest.setInstanceName(instanceName);
+        reedRequest.setClazzName(clazzName);
+        reedRequest.setMethodName(methodName);
+        reedRequest.setRequestProps(props);
+        return reedRequest;
+    }
+
 }

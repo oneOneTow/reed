@@ -4,10 +4,7 @@ package com.think.reed.protocol;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/**
- * @author jgs
- * @date 2020/3/11 16:58
- */
+
 @AllArgsConstructor
 public enum ProtocolType {
   REED((byte) 1);

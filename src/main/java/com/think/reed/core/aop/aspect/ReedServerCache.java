@@ -1,4 +1,4 @@
-package com.think.reed.aop.aspect.core;
+package com.think.reed.core.aop.aspect;
 
 import java.util.concurrent.ConcurrentHashMap;
 

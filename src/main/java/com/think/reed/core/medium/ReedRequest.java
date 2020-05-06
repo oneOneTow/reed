@@ -1,27 +1,17 @@
-package com.think.reed.rpc;
+package com.think.reed.core.medium;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.buffer.AbstractByteBuf;
-import lombok.Data;
-
-@Data
 public class ReedRequest {
 
-    private String serverName;
+    private String instanceName;
 
     private Map<String, Object> requestProps;
 
-    private transient Method method;
-    private transient String interfaceName;
+    private String clazzName;
 
-    private transient byte serializeType;
-
-    private transient AbstractByteBuf data;
-
-    private transient String invokeType;
+    private transient String methodName;
 
     private transient Integer timeout;
 
@@ -83,5 +73,45 @@ public class ReedRequest {
             requestProps = new HashMap<String, Object>(16);
         }
         requestProps.putAll(map);
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
+
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
+    public Map<String, Object> getRequestProps() {
+        return requestProps;
+    }
+
+    public void setRequestProps(Map<String, Object> requestProps) {
+        this.requestProps = requestProps;
+    }
+
+    public String getClazzName() {
+        return clazzName;
+    }
+
+    public void setClazzName(String clazzName) {
+        this.clazzName = clazzName;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public Integer getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Integer timeout) {
+        this.timeout = timeout;
     }
 }
