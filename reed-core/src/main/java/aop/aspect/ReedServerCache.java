@@ -21,6 +21,9 @@ public class ReedServerCache {
     }
 
     public static boolean reedServerIfExists(String instance) {
+      if (null == cacheReedServer) {
+        cacheReedServer = new ConcurrentHashMap<String, Object>(12);
+      }
         return null != cacheReedServer.get(instance);
     }
 }

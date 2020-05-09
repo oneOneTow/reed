@@ -4,15 +4,14 @@ import aop.aspect.annotation.ReedClient;
 import aop.aspect.annotation.ReedMapping;
 import aop.aspect.annotation.ReedRequestParam;
 import exception.ReedException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-
 import medium.ReedRequest;
 import medium.ReedResponse;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -50,41 +49,42 @@ public class ReedClientAspect {
         Proxy client = (Proxy)ReedServerCache.getCacheReedServer(instance);
 
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
-        Class[] parameterTypes = signature.getParameterTypes();
-        String[] parameterNames = signature.getParameterNames();
         Object[] objectValue = joinPoint.getArgs();
         Method signatureMethod = signature.getMethod();
         ReedMapping reedMapping = signatureMethod.getAnnotation(ReedMapping.class);
+        Annotation[][] parameterAnnotations = signatureMethod.getParameterAnnotations();
 
         Map<String, Object> props = null;
-        if (null != parameterTypes && parameterTypes.length == 0) {
 
-            for (int var = 0; var < parameterTypes.length; var++) {
-                Class<?> parameter = parameterTypes[var];
-                ReedRequestParam requestParam = null;
+        if (null != parameterAnnotations && parameterAnnotations.length != 0) {
+            for(int var = 0; var < parameterAnnotations.length; var++) {
+                String paramValue = (String) objectValue[var];
+                for(int var2 = 0; var2 < parameterAnnotations[var].length; var2++) {
+                    Annotation annotation = parameterAnnotations[var][var2];
+                    if(!annotation.annotationType().equals(ReedRequestParam.class)) {
+                      continue;
+                    }
+                    ReedRequestParam reedRequestParam = (ReedRequestParam)annotation;
+                    String paramName = reedRequestParam.value();
 
-                if (!parameter.isAnnotationPresent(ReedRequestParam.class)) {
-                    continue;
-                }
-                if (props == null) {
-                    props = new HashMap<String, Object>();
-                }
-                String value = requestParam.value();
-
-                if ((requestParam = parameter.getAnnotation(ReedRequestParam.class)).required()) {
-                    if (null == objectValue[var]) {
-                        throw new ReedException("param [ " + value + " ] can't null!");
+                    if (reedRequestParam.required()) {
+                        if (null == paramName || paramName.length() == 0) {
+                            throw new ReedException("request param [ " + paramName + " ] must not be null or blank!");
+                        }
+                        if(null == props || props.size() == 0) {
+                            props = new LinkedHashMap<>();
+                            props.put(paramName, paramValue);
+                        } else {
+                            props.put(paramName, paramValue);
+                        }
                     }
                 }
-
-                props.put((value == null || value.length() == 0) ? parameterNames[var] : value, objectValue[var]);
             }
         }
 
         ReedRequest reedRequest = this.buildRequest(instance, reedMapping.clazzName(), reedMapping.methodName(), props);
         ReedResponse reedResponse = client.doInvoke(reedRequest);
     }
-
 
     ReedRequest buildRequest(String instanceName,String clazzName, String methodName, Map<String, Object> props) {
         ReedRequest reedRequest = new ReedRequest();
@@ -94,5 +94,4 @@ public class ReedClientAspect {
         reedRequest.setRequestProps(props);
         return reedRequest;
     }
-
 }
