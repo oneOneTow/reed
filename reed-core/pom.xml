@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.think</groupId>
-    <artifactId>reed</artifactId>
+    <artifactId>reed-core</artifactId>
     <version>R.1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <name>reed-core</name>
 
     <properties>
         <io.netty.version>4.1.42.Final</io.netty.version>
-        <org.projectlombok.version>1.18.8</org.projectlombok.version>
         <io.protostuff.version>1.6.2</io.protostuff.version>
         <commons-lang.version>2.6</commons-lang.version>
         <junit.version>4.12</junit.version>
@@ -20,26 +19,18 @@
         <org.slf4j.version>1.7.28</org.slf4j.version>
         <java.version>1.8</java.version>
         <reed.version>R.1.0.0-SNAPSHOT</reed.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <modules>
-        <module>reed-common</module>
-        <module>reed-core</module>
-        <module>reed-rpc</module>
-    </modules>
-
     <dependencies>
+        <dependency>
+            <groupId>com.think</groupId>
+            <artifactId>reed-common</artifactId>
+            <version>${reed.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${io.netty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.protostuff</groupId>
@@ -97,10 +88,35 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.0</version>
                 <configuration>
-                    <encoding>UTF-8</encoding>
+                    <encoding>utf-8</encoding>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.11</version>
+                <configuration>
+                    <complianceLevel>${java.version}</complianceLevel>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+                <dependencies>
+                   <dependency>
+                    <groupId>org.aspectj</groupId>
+                    <artifactId>aspectjtools</artifactId>
+                    <version>${org.aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
