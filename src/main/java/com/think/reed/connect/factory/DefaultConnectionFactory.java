@@ -98,6 +98,9 @@ public class DefaultConnectionFactory implements ConnectionFactory {
     }
 
     protected Channel doCreateConnection(String targetIP, int targetPort, int connectTimeout) throws Exception {
+        if (null == bootstrap) {
+            initBootstrap();
+        }
         // prevent unreasonable value, at least 1000
         connectTimeout = Math.max(connectTimeout, 1000);
         String address = targetIP + ":" + targetPort;
