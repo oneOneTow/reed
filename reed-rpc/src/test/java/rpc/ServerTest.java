@@ -1,4 +1,6 @@
-package com.think.reed.rpc.remoting.server;
+package rpc;
+
+import rpc.remoting.server.ReedRemotingServer;
 
 /**
  * @author zhiqing.lu
@@ -8,7 +10,9 @@ package com.think.reed.rpc.remoting.server;
 public class ServerTest {
 
     public static void main(String[] args) {
-        ReedRemotingServer server= new ReedRemotingServer("127.0.0.1",8081);
+        ReedRemotingServer server = ReedRemotingServer.getInstance();
+        server.setIp("127.0.0.1");
+        server.setPort(8081);
         server.start();
         System.out.println("start");
     }

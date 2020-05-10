@@ -3,6 +3,7 @@ package rpc.remoting.command;
 import protocol.ProtocolType;
 import rpc.remoting.InvokeContext;
 import lombok.Data;
+import serialzation.Serializer;
 
 import java.io.Serializable;
 
@@ -13,18 +14,21 @@ import java.io.Serializable;
  **/
 @Data
 public abstract class RpcCommand implements Serializable {
-    private int            id;
-    private RpcCommandType type;
-    private InvokeContext  invokeContext;
-    private ProtocolType   protocolType;
-    private byte           classLen;
-    private byte           headerLen;
-    private int            ContentLen;
-    private byte[]         className;
-    private byte[]         head;
-    private byte[]         content;
+    protected int            id;
+    protected RpcCommandType type;
+    protected InvokeContext  invokeContext;
+    protected ProtocolType   protocolType;
+    protected Serializer     serializer;
+    protected byte           classLen;
+    protected byte           headerLen;
+    protected int            ContentLen;
+    protected byte[]         className;
+    protected byte[]         head;
+    protected byte[]         content;
+
 
     public abstract void serialize();
 
     public abstract void deserialize();
+
 }

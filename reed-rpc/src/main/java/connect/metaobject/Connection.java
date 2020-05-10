@@ -9,6 +9,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,12 +67,15 @@ public class Connection {
 
     public Connection(Channel channel) {
         this.channel = channel;
+        this.channel.attr(CONNECTION).set(this);
         this.channel.attr(protocol);
     }
 
     public Connection(Channel channel, Url url) {
         this.channel = channel;
         this.url = url;
+        this.channel.attr(CONNECTION).set(this);
+        this.channel.attr(protocol);
     }
 
     public Channel getChannel() {
@@ -139,5 +143,9 @@ public class Connection {
 
     public InvokeFuture removeInvokeFuture(int cmdId) {
         return this.invokeFutureMap.remove(cmdId);
+    }
+
+    public InetSocketAddress getRemoteAddress() {
+        return (InetSocketAddress) this.channel.remoteAddress();
     }
 }

@@ -31,13 +31,26 @@ public class DefaultConnectionFactory implements ConnectionFactory {
 
     private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 
-    public DefaultConnectionFactory() {
+    private static ConnectionFactory connectionFactory;
+
+    private DefaultConnectionFactory() {
         // 默认
         this.codec = new ReedCodec();
         // 默认
         this.handler = new ReedRpcHandler();
     }
 
+
+    public static ConnectionFactory getInstance(){
+        if (null == connectionFactory) {
+            synchronized (DefaultConnectionFactory.class){
+                if (null == connectionFactory){
+                    connectionFactory = new DefaultConnectionFactory();
+                }
+            }
+        }
+        return connectionFactory;
+    }
     public void initBootstrap() {
         bootstrap = new Bootstrap();
         // 暂时不引入EpollSocketChannel.class
@@ -129,7 +142,7 @@ public class DefaultConnectionFactory implements ConnectionFactory {
         return future.channel();
     }
 
-    enum ConnectionEventType {
+    public enum ConnectionEventType {
         /**
          * 连接
          */

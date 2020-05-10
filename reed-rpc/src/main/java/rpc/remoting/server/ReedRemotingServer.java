@@ -2,10 +2,11 @@ package rpc.remoting.server;
 
 import codec.Codec;
 import codec.ReedCodec;
+import connect.ConnectionManager;
 import connect.DefaultConnectionManager;
+import connect.factory.DefaultConnectionFactory;
 import connect.metaobject.Connection;
 import connect.metaobject.Url;
-import connect.strategy.RandomConnectionSelectStrategy;
 import rpc.remoting.Remoting;
 import rpc.remoting.command.RpcCommandType;
 import rpc.remoting.command.RpcCommandFactory;
@@ -37,22 +38,33 @@ public class ReedRemotingServer implements RemotingServer {
 
     private static final Logger logger = LoggerFactory.getLogger(ReedRemotingServer.class);
 
-    private   AtomicBoolean started = new AtomicBoolean(false);
-    private   String        ip;
-    private   int           port;
-    protected Remoting      rpcRemoting;
+    private static ReedRemotingServer reedRemotingServer;
+    private AtomicBoolean started = new AtomicBoolean(false);
+    private String ip;
+    private int port;
+    protected Remoting rpcRemoting;
 
     private Codec codec = new ReedCodec();
-    private DefaultConnectionManager connectionManager;
+    private ConnectionManager connectionManager;
     private ServerBootstrap bootstrap;
     private ChannelFuture channelFuture;
     private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     /** worker event loop group. Reuse I/O worker threads between rpc servers. */
     private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
 
-    public ReedRemotingServer(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
+    private ReedRemotingServer() {
+
+    }
+
+    public static ReedRemotingServer getInstance() {
+        if (null == reedRemotingServer) {
+            synchronized (ReedRemotingServer.class) {
+                if (null == reedRemotingServer) {
+                    reedRemotingServer = new ReedRemotingServer();
+                }
+            }
+        }
+        return reedRemotingServer;
     }
 
     @Override
@@ -85,8 +97,8 @@ public class ReedRemotingServer implements RemotingServer {
     }
 
     protected void doInit() {
-        this.connectionManager = new DefaultConnectionManager(new RandomConnectionSelectStrategy());
-        this.rpcRemoting = new ReedServerRemoting(this.connectionManager, new RpcCommandFactory());
+        this.connectionManager = DefaultConnectionManager.getInstance();
+        this.rpcRemoting = new ReedServerRemoting(this.connectionManager,RpcCommandFactory.getInstance());
         this.bootstrap = new ServerBootstrap();
         this.bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
             .option(ChannelOption.SO_BACKLOG, 1024).option(ChannelOption.SO_REUSEADDR, true)
@@ -112,8 +124,10 @@ public class ReedRemotingServer implements RemotingServer {
             }
 
             private void createConnection(SocketChannel channel) {
-                Url url = UrlUtils.getUrlnFromChannel(channel);
+
+                Url url = UrlUtils.getUrlFromChannel(channel);
                 connectionManager.add(new Connection(channel, url), url.getUniqueKey());
+                channel.pipeline().fireUserEventTriggered(DefaultConnectionFactory.ConnectionEventType.CONNECT);
             }
         });
     }
@@ -146,9 +160,18 @@ public class ReedRemotingServer implements RemotingServer {
         return this.ip;
     }
 
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+
     @Override
     public int port() {
         return this.port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     @Override

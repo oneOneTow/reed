@@ -87,7 +87,7 @@ public class RpcCommandHandler implements CommandHandler {
                         if (future.isSuccess()) {
                             if (logger.isInfoEnabled()) {
                                 logger.info("Write back exception response done, requestId={}, status={}", id,
-                                    response.getResponseCode());
+                                    response.getResponseStatus());
                             }
                         } else {
                             logger.error("Write back exception response failed, requestId={}", id, future.cause());

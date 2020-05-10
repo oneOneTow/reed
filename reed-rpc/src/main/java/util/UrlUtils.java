@@ -3,6 +3,8 @@ package util;
 import connect.metaobject.Url;
 import io.netty.channel.socket.SocketChannel;
 
+import java.net.InetSocketAddress;
+
 /**
  * @author zhiqing.lu
  * @version v1.0.0
@@ -10,7 +12,9 @@ import io.netty.channel.socket.SocketChannel;
  **/
 public class UrlUtils {
 
-    public static Url getUrlnFromChannel(SocketChannel channel) {
-        return null;
+    public static Url getUrlFromChannel(SocketChannel channel) {
+        InetSocketAddress address = channel.remoteAddress();
+        Url url = new Url(address.getHostString(), address.getPort());
+        return url;
     }
 }

@@ -1,5 +1,6 @@
 package rpc.remoting.command.future;
 
+import rpc.remoting.command.RpcCommand;
 import rpc.remoting.command.RpcResponseCommand;
 
 /**
@@ -13,4 +14,5 @@ public interface InvokeFuture {
 
     void cancelTimeout();
 
+    RpcCommand waitResponse(int timeoutMillis) throws InterruptedException;
 }

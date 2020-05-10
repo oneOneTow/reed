@@ -81,7 +81,7 @@ public class ReedProtocolCodeDecoder implements Decoder {
     if (rpcCommand instanceof RpcResponseCommand) {
       RpcResponseCommand responseCommand = (RpcResponseCommand) rpcCommand;
       byte responseCode = byteBuf.readByte();
-      responseCommand.setResponseCode(responseCode);
+      responseCommand.setResponseStatus(RpcResponseCommand.ResponseStatus.valueOfCode(responseCode));
       return responseCommand;
     }
 

@@ -1,9 +1,16 @@
 package rpc.remoting.client;
 
 import connect.ConnectionManager;
+import connect.DefaultConnectionManager;
 import connect.metaobject.Connection;
+import io.netty.buffer.Unpooled;
+import io.netty.util.CharsetUtil;
 import rpc.remoting.AbstractRemoting;
 import rpc.remoting.InvokeCallback;
+import rpc.remoting.InvokeContext;
+import rpc.remoting.command.CommandFactory;
+import rpc.remoting.command.RpcCommandFactory;
+import rpc.remoting.command.future.DefaultInvokeFuture;
 import rpc.remoting.command.future.InvokeFuture;
 import rpc.remoting.command.RpcCommand;
 import io.netty.channel.ChannelFuture;
@@ -20,27 +27,66 @@ public class ReedClientRemoting extends AbstractRemoting {
     private static final Logger logger = LoggerFactory.getLogger(ReedClientRemoting.class);
 
     protected ConnectionManager connectionManager;
+    protected CommandFactory commandFactory;
 
-    public ReedClientRemoting() {
+    private static ReedClientRemoting clientRemoting;
+
+    private ReedClientRemoting() {}
+
+
+    public static ReedClientRemoting getInstance(){
+        if (null == clientRemoting) {
+            synchronized (ReedClientRemoting.class){
+                if (null == clientRemoting) {
+                    clientRemoting = new ReedClientRemoting();
+                    clientRemoting.commandFactory = RpcCommandFactory.getInstance();
+                    clientRemoting.connectionManager = DefaultConnectionManager.getInstance();
+                }
+            }
+        }
+        return clientRemoting;
     }
 
-    public ReedClientRemoting(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
-    }
+
 
     @Override
     public RpcCommand invokeSync(Connection conn, RpcCommand request, int timeoutMillis) {
         int requestId = request.getId();
-        conn.getChannel().writeAndFlush(request).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture f) throws Exception {
-                if (!f.isSuccess()) {
-                    // TODO:补充失败逻辑
-                    logger.error("Invoke send failed, id={}", requestId, f.cause());
+        final InvokeFuture future = createInvokeFuture(request, request.getInvokeContext());
+        try {
+            conn.getChannel().writeAndFlush(request).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture f) throws Exception {
+                    if (!f.isSuccess()) {
+                        conn.removeInvokeFuture(requestId);
+                        future.putResponse(commandFactory.createSendFailedResponse(conn.getRemoteAddress(), f.cause()));
+                        logger.error("Invoke send failed, id={}", requestId, f.cause());
+                    }
                 }
-            }
-        });
-        return null;
+            });
+        } catch (Exception e) {
+            conn.removeInvokeFuture(requestId);
+            future.putResponse(commandFactory.createSendFailedResponse(conn.getRemoteAddress(), e));
+            logger.error("Exception caught when sending invocation,requestId={}", requestId, e);
+        }
+        RpcCommand response = null;
+        try {
+            response = future.waitResponse(timeoutMillis);
+        } catch (InterruptedException e) {
+            conn.removeInvokeFuture(requestId);
+            logger.error("wait response exception", e);
+        }
+
+        if (null == response) {
+            conn.removeInvokeFuture(requestId);
+            response = this.commandFactory.createTimeoutResponse(conn.getRemoteAddress());
+            logger.error("Wait response, request id={} timeout!", requestId);
+        }
+        return response;
+    }
+
+    private InvokeFuture createInvokeFuture(RpcCommand request, InvokeContext invokeContext) {
+        return new DefaultInvokeFuture(request.getId(), null, invokeContext, this.commandFactory);
     }
 
     @Override
@@ -50,13 +96,15 @@ public class ReedClientRemoting extends AbstractRemoting {
 
     @Override
     public InvokeFuture invokeWithFuture(Connection conn, RpcCommand request, int timeoutMillis) {
-        // TODO: 1.0不实现该功能
+        // TODO: 1.0 not impl
         return null;
     }
 
     @Override
     public void invokeWithCallback(Connection conn, RpcCommand request, InvokeCallback invokeCallback,
-                                   int timeoutMillis) {
-        // TODO: 1.0不实现该功能
+        int timeoutMillis) {
+        // TODO: 1.0 not impl
     }
+
+
 }

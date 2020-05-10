@@ -41,7 +41,7 @@ public class ReedProtocolCodeEncoder implements Encoder {
   }
 
   private void doResponseEncode(ByteBuf byteBuf, RpcResponseCommand rpcCommand) {
-    byte responseCode = rpcCommand.getResponseCode();
+    byte responseCode = rpcCommand.getResponseStatus().getCode();
     byteBuf.writeByte(responseCode);
   }
 }

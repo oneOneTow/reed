@@ -1,10 +1,12 @@
 package connect;
 
 import connect.factory.ConnectionFactory;
+import connect.factory.DefaultConnectionFactory;
 import connect.metaobject.Connection;
 import connect.metaobject.ConnectionPool;
 import connect.metaobject.Url;
 import connect.strategy.ConnectionSelectStrategy;
+import connect.strategy.RandomConnectionSelectStrategy;
 import exception.ConnectionException;
 import exception.RemotingException;
 import org.apache.commons.lang.StringUtils;
@@ -29,16 +31,36 @@ public class DefaultConnectionManager implements ConnectionManager {
     private ConcurrentHashMap<String, ConnectionPool> connectionPoolMap = new ConcurrentHashMap<>();
 
     protected ConnectionSelectStrategy connectionSelectStrategy;
+
     protected ConnectionFactory connectionFactory;
 
-    public DefaultConnectionManager(ConnectionSelectStrategy connectionSelectStrategy) {
-        this.connectionSelectStrategy = connectionSelectStrategy;
+    private static  ConnectionManager connectionManager;
+
+    private DefaultConnectionManager() {
+        this.connectionSelectStrategy = new RandomConnectionSelectStrategy();
+        this.connectionFactory =  DefaultConnectionFactory.getInstance();
     }
 
-    public DefaultConnectionManager(ConnectionSelectStrategy connectionSelectStrategy,
+    private DefaultConnectionManager(ConnectionSelectStrategy connectionSelectStrategy) {
+        this.connectionSelectStrategy = connectionSelectStrategy;
+        this.connectionFactory = DefaultConnectionFactory.getInstance();
+    }
+
+    private DefaultConnectionManager(ConnectionSelectStrategy connectionSelectStrategy,
         ConnectionFactory connectionFactory) {
         this.connectionSelectStrategy = connectionSelectStrategy;
         this.connectionFactory = connectionFactory;
+    }
+
+    public static  ConnectionManager getInstance(){
+        if(null == connectionManager){
+             synchronized (DefaultConnectionManager.class){
+                 if (null == connectionManager){
+                     connectionManager = new DefaultConnectionManager();
+                 }
+             }
+        }
+        return connectionManager;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class ReedRpcHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.info("channelRead:{}", msg);
-        CommandHandler commandHandler = new RpcCommandHandler(new RpcCommandFactory());
+        CommandHandler commandHandler = new RpcCommandHandler(RpcCommandFactory.getInstance());
         RemotingContext remotingContext = new RemotingContext(ctx, new InvokeContext(), serverSide);
         commandHandler.handleCommand(remotingContext, msg);
     }

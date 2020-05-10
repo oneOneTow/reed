@@ -15,6 +15,13 @@ public class RpcRequestCommand extends RpcCommand {
     private String requestClass;
     private byte timeout;
 
+    public RpcRequestCommand() {
+    }
+
+    public RpcRequestCommand(Object requestObject) {
+        this.requestObject = requestObject;
+    }
+
     @Override
     public void serialize() {
 

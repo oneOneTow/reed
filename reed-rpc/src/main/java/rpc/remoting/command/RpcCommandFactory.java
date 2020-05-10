@@ -9,49 +9,75 @@ import java.net.InetSocketAddress;
  **/
 public class RpcCommandFactory implements CommandFactory {
 
+    private static RpcCommandFactory commandFactory;
+    private RpcCommandFactory(){}
+
+    public static RpcCommandFactory getInstance(){
+        if (null == commandFactory) {
+            synchronized (RpcCommandFactory.class){
+                if (null == commandFactory) {
+                    commandFactory = new RpcCommandFactory();
+                }
+            }
+        }
+        return commandFactory;
+    }
+
     @Override
-    public <T extends RpcCommand> T createRequestCommand(Object requestObject) {
+    public RpcRequestCommand createRequestCommand(Object requestObject) {
+        return new RpcRequestCommand(requestObject);
+    }
+
+    @Override
+    public RpcResponseCommand createResponse(Object responseObject, RpcCommand requestCmd) {
+        RpcResponseCommand response = new RpcResponseCommand(requestCmd.getId(), responseObject);
+        response.setSerializer(requestCmd.getSerializer());
+        response.setResponseStatus(RpcResponseCommand.ResponseStatus.SUCCESS);
+        return response;
+    }
+
+    @Override
+    public RpcResponseCommand createExceptionResponse(int id, String errMsg) {
         return null;
     }
 
     @Override
-    public <T extends RpcCommand> T createResponse(Object responseObject, RpcCommand requestCmd) {
+    public RpcResponseCommand createExceptionResponse(int id, Throwable t, String errMsg) {
         return null;
     }
 
     @Override
-    public <T extends RpcCommand> T createExceptionResponse(int id, String errMsg) {
+    public RpcResponseCommand createExceptionResponse(int id, RpcResponseCommand.ResponseStatus status) {
         return null;
     }
 
     @Override
-    public <T extends RpcCommand> T createExceptionResponse(int id, Throwable t, String errMsg) {
-        return null;
-    }
-
-    @Override
-    public <T extends RpcCommand> T createExceptionResponse(int id, RpcResponseCommand.ResponseStatus status) {
-        return null;
-    }
-
-    @Override
-    public <T extends RpcCommand> T createExceptionResponse(int id, RpcResponseCommand.ResponseStatus status,
+    public RpcResponseCommand createExceptionResponse(int id, RpcResponseCommand.ResponseStatus status,
                                                             Throwable t) {
         return null;
     }
 
     @Override
-    public <T extends RpcCommand> T createTimeoutResponse(InetSocketAddress address) {
-        return null;
+    public RpcResponseCommand createTimeoutResponse(InetSocketAddress address) {
+        RpcResponseCommand responseCommand = new RpcResponseCommand();
+        responseCommand.setResponseStatus(RpcResponseCommand.ResponseStatus.TIMEOUT);
+        responseCommand.setResponseTimeMillis(System.currentTimeMillis());
+        responseCommand.setResponseHost(address);
+        return responseCommand;
     }
 
     @Override
-    public <T extends RpcCommand> T createSendFailedResponse(InetSocketAddress address, Throwable throwable) {
-        return null;
+    public RpcResponseCommand createSendFailedResponse(InetSocketAddress address, Throwable throwable) {
+        RpcResponseCommand responseCommand = new RpcResponseCommand();
+        responseCommand.setResponseStatus(RpcResponseCommand.ResponseStatus.CLIENT_SEND_ERROR);
+        responseCommand.setResponseTimeMillis(System.currentTimeMillis());
+        responseCommand.setResponseHost(address);
+        responseCommand.setCause(throwable);
+        return responseCommand;
     }
 
     @Override
-    public <T extends RpcCommand> T createConnectionClosedResponse(InetSocketAddress address, String message) {
+    public RpcResponseCommand createConnectionClosedResponse(InetSocketAddress address, String message) {
         return null;
     }
 }
