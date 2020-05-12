@@ -4,6 +4,8 @@ import connect.ConnectionManager;
 import connect.DefaultConnectionManager;
 import connect.metaobject.Connection;
 import connect.metaobject.Url;
+import io.netty.util.Attribute;
+import protocol.ProtocolType;
 import rpc.remoting.client.ReedClientRemoting;
 import rpc.remoting.command.RpcCommand;
 import rpc.remoting.command.RpcCommandType;
@@ -23,7 +25,8 @@ public class ClientTest {
         url.setConnectTimeout(5000);
         Connection connection = connectionManager.getAndCreateIfAbsent(url);
         ReedClientRemoting client =  ReedClientRemoting.getInstance();
-
+        Attribute<ProtocolType> s = connection.getChannel().attr(Connection.protocol);
+        System.out.println(s);
         RpcCommand request = new RpcRequestCommand();
         request.setId(1);
         request.setType(RpcCommandType.REQUEST);
